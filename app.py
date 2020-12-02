@@ -3,8 +3,8 @@ from flask import request as req
 import os
 import urllib
 
-
 app = Flask(__name__)
+
 
 @app.route('/')
 def index():
