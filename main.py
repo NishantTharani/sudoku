@@ -12,7 +12,7 @@ class SudokuGame:
     to play the game, and for a solution to be verified.
     """
 
-    def __init__(self, n=3):
+    def __init__(self, n=3, grid=None):
         """
         Sets up a new sudoku game.
 
@@ -20,7 +20,10 @@ class SudokuGame:
         self._grid is a list of lists that represents the sudoku grid
         self._original_grid is a copy of the starting state of the sudoku grid
         """
-        self._grid = self._get_new_grid(n=n)
+        if grid is not None:
+            self._grid = grid
+        else:
+            self._grid = self._get_new_grid(n=n)
         self._unremovable_entries = [[val is not None for val in row] for row in self._grid]
         self._n = n
         self._original_grid = deepcopy(self._grid)
@@ -153,6 +156,14 @@ class SudokuGame:
             self._state = 'INCOMPLETE'
             return
 
+        # Now check the solution. First check that all the original numbers are the same
+        for row_idx in range(len(self._grid)):
+            for col_idx in range(len(self._grid[0])):
+                if self._original_grid[row_idx][col_idx] is not None and self._grid[row_idx][col_idx] != \
+                        self._original_grid[row_idx][col_idx]:
+                    self._state = 'INCORRECT'
+                    return
+
         # A helper method to check that a list of n^2 numbers is a valid sudoku line/column/minibox
         # Runs in O(n^2)
         def check_group(nums):
@@ -162,7 +173,7 @@ class SudokuGame:
             for num in nums:
                 if num < 1 or num > n ** 2:
                     return False
-                counters[num-1] += 1
+                counters[num - 1] += 1
             for c in counters:
                 if c != 1:
                     return False
