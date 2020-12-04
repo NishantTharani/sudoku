@@ -72,7 +72,7 @@ class SudokuGame:
                                    [4, 6, 9, 2, 5, 7, 3, 8, 1],
                                    [3, 5, 1, 9, 8, 4, 7, 6, 2],
                                    [2, 8, 7, 6, 1, 3, 4, 5, 9]]
-        return almost_solved_easy_grid
+        return easy_grid
 
     def fill_number(self, row, col, num):
         """
@@ -88,6 +88,12 @@ class SudokuGame:
             self._grid[row][col] = num
             self.update_game_state()
             return True
+
+    def get_grid(self):
+        return self._grid
+
+    def get_n(self):
+        return self._n
 
     def remove_number(self, row, col):
         """

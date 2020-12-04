@@ -1,8 +1,47 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    <style>
+        .sudokuCell:first-child {
+            border-left: solid;
+        }
+
+        .sudokuCell:nth-child(3n) {
+            border-right: solid;
+        }
+
+        .sudokuRow:first-child {
+            border-top: solid;
+        }
+
+        .sudokuRow:nth-child(3n) td {
+            border-bottom: solid;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
-    <p>Hello, Sudoku!</p>
+    <h1>Hello, Sudoku!</h1>
+
+    <div class="sudoku">
+        <table id="sudokuGrid" border="1">
+            {% for row in range(n*n) %}
+                <tr class="sudokuRow">
+                    {% for col in range(n*n) %}
+                        {% if not grid[row][col] %}
+                            <td class="sudokuCell activeSudokuCell">
+                            </td>
+                        {% else %}
+                            <td class="sudokuCell">
+                                {{ grid[row][col] }}
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
 
 
