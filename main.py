@@ -27,7 +27,7 @@ class SudokuGame:
         self._state = ""
         self.update_game_state()
 
-    def reset_game(self, new_board=True, n=3):
+    def reset_game(self, new_board=True, n=3, preference=None):
         """
         Resets the game, either to the original state of the current grid or with a new grid.
 
@@ -35,7 +35,7 @@ class SudokuGame:
         :param n: the dimensions of the grid are n^2 by n^2
         """
         if new_board:
-            self._grid = self._get_new_grid(n=n)
+            self._grid = self._get_new_grid(n=n, preference=preference)
             self._unremovable_entries = [[val is not None for val in row] for row in self._grid]
             self._n = n
             self._original_grid = self._grid
@@ -44,33 +44,36 @@ class SudokuGame:
             self._grid = self._original_grid
             self._state = "INCOMPLETE"
 
-    def _get_new_grid(self, n):
+    def _get_new_grid(self, n, preference=None):
         """
         Returns a list of lists corresponding to the start of a new sudoku game. The grid is n^2 by n^2
         :param n: the grid dimensions of the grid are n^2 by n^2
         :return: list of lists of ints corresponding to the game state; blank squares are None
         """
         # TODO implement generation of a new grid
-        easy_grid = [[None, None, None, None, 7, 8, None, None, 5],
-                     [None, None, 5, 4, 2, 9, None, None, None],
-                     [7, 3, None, None, None, 1, None, 9, None],
-                     [None, 7, None, None, None, None, None, 2, None],
-                     [9, None, 6, None, None, None, 5, None, 7],
-                     [1, 2, None, None, None, 5, 9, 3, 6],
-                     [None, 6, 9, None, 5, 7, None, 8, 1],
-                     [3, None, 1, 9, None, None, None, 6, None],
-                     [2, None, None, 6, 1, None, 4, 5, None]]
-
-        almost_solved_easy_grid = [[None, 9, 2, 3, 7, 8, 1, 4, 5],
-                                   [8, None, 5, 4, 2, 9, 6, 7, 3],
-                                   [7, 3, 4, 5, 6, 1, 2, 9, 8],
-                                   [5, 7, 3, 1, 9, 6, 8, 2, 4],
-                                   [9, 4, 6, 8, 3, 2, 5, 1, 7],
-                                   [1, 2, 8, 7, 4, 5, 9, 3, 6],
-                                   [4, 6, 9, 2, 5, 7, 3, 8, 1],
-                                   [3, 5, 1, 9, 8, 4, 7, 6, 2],
-                                   [2, 8, 7, 6, 1, 3, 4, 5, 9]]
-        return almost_solved_easy_grid
+        if preference is None or preference == 'CHILDLIKE':
+            grid = [[None, 9, 2, 3, 7, 8, 1, 4, 5],
+                    [8, None, 5, 4, 2, 9, 6, 7, 3],
+                    [7, 3, 4, 5, 6, 1, 2, 9, 8],
+                    [5, 7, 3, 1, 9, 6, 8, 2, 4],
+                    [9, 4, 6, 8, 3, 2, 5, 1, 7],
+                    [1, 2, 8, 7, 4, 5, 9, 3, 6],
+                    [4, 6, 9, 2, 5, 7, 3, 8, 1],
+                    [3, 5, 1, 9, 8, 4, 7, 6, 2],
+                    [2, 8, 7, 6, 1, 3, 4, 5, 9]]
+        elif preference == 'EASY':
+            grid = [[None, None, None, None, 7, 8, None, None, 5],
+                    [None, None, 5, 4, 2, 9, None, None, None],
+                    [7, 3, None, None, None, 1, None, 9, None],
+                    [None, 7, None, None, None, None, None, 2, None],
+                    [9, None, 6, None, None, None, 5, None, 7],
+                    [1, 2, None, None, None, 5, 9, 3, 6],
+                    [None, 6, 9, None, 5, 7, None, 8, 1],
+                    [3, None, 1, 9, None, None, None, 6, None],
+                    [2, None, None, 6, 1, None, 4, 5, None]]
+        else:
+            raise ValueError
+        return grid
 
     def fill_number(self, row, col, num):
         """

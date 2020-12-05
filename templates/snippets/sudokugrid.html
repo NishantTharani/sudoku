@@ -1,0 +1,19 @@
+<table id="sudokuGrid" border="1">
+    {% for row in range(n*n) %}
+        <tr class="sudokuRow">
+            {% for col in range(n*n) %}
+                {% if not original_grid[row][col] %}
+                    <td class="sudokuCell openSudokuCell" data-row="{{ row }}" data-col="{{ col }}">
+                        {% if grid[row][col] %}
+                            {{ grid[row][col] }}
+                        {% endif %}
+                    </td>
+                {% else %}
+                    <td class="sudokuCell" data-row="{{ row }}" data-col="{{ col }}">
+                        {{ grid[row][col] }}
+                    </td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>

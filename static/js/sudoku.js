@@ -1,13 +1,40 @@
-$('.openSudokuCell').on('click', (event) => {
-    console.log($(event.target).attr("class"));
-    $('.activeSudokuCell').removeClass('activeSudokuCell');
-    $(event.target).addClass('activeSudokuCell');
-    console.log('hi');
-});
+$(document).ready(mapHandlers);
+
+function mapHandlers() {
+    $('.openSudokuCell').on('click', (event) => {
+        console.log($(event.target).attr("class"));
+        $('.activeSudokuCell').removeClass('activeSudokuCell');
+        $(event.target).addClass('activeSudokuCell');
+        console.log('hi');
+    });
 
 // $('body').on('keypress', handler = keyHandler);
 
-$('body').on('keydown', handler = keyHandler);
+    $('body').on('keyup', handler = keyHandler);
+
+    $('.resetButton').on('click', resetButtonHandler);
+
+    $('.childlikeButton').on('click', childlikeButtonHandler);
+
+    $('.easyButton').on('click', easyButtonHandler);
+}
+
+
+function resetButtonTemplate(url, preference, event) {
+    console.log("Restaging game")
+    $.ajax(url, {
+        contentType: "application/json",
+        data: JSON.stringify({
+            'request': preference
+        }),
+        type: 'POST',
+        success: function (data) {
+            console.log('Reset Game Successfully');
+            $('.sudokuGridContainer').html(data.gridHTML);
+            mapHandlers();
+        }
+    })
+}
 
 function keyHandlerTemplate(url, event) {
     let cell = $('.activeSudokuCell');

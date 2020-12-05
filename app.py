@@ -42,14 +42,35 @@ def keypress():
     session['grid'] = game.get_grid()
     session['original_grid'] = game.get_original_grid()
     session['n'] = game.get_n()
-    stateHTML = render_template('snippets/gamestatus.html', game_status=game.get_game_state())
+    state_html = render_template('snippets/gamestatus.html', game_status=game.get_game_state())
     return {
         'result': 'success',
         'newVal': game.get_val_at(row, col),
         'row': row,
         'col': col,
-        'stateHTML': stateHTML
+        'stateHTML': state_html
     }
 
-    if __name__ == '__main__':
-        app.run(debug=True)
+
+@app.route('/_reset', methods=['POST'])
+def reset():
+    data = req.get_json()
+    game = SudokuGame(session['n'], session['grid'], session['original_grid'])
+    preference = data['request']
+    if preference == 'RESET':
+        game.reset_game(new_board=False)
+    else:
+        game.reset_game(preference=preference)
+    session['grid'] = game.get_grid()
+    session['original_grid'] = game.get_original_grid()
+    session['n'] = game.get_n()
+    grid_html = render_template('snippets/sudokugrid.html',
+                                grid=game.get_grid(),
+                                original_grid=game.get_original_grid(),
+                                n=game.get_n())
+    return {'gridHTML': grid_html}
+    pass
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
