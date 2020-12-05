@@ -12,7 +12,7 @@ class SudokuGame:
     to play the game, and for a solution to be verified.
     """
 
-    def __init__(self, n=3, grid=None):
+    def __init__(self, n=3, grid=None, original_grid=None):
         """
         Sets up a new sudoku game.
 
@@ -20,14 +20,12 @@ class SudokuGame:
         self._grid is a list of lists that represents the sudoku grid
         self._original_grid is a copy of the starting state of the sudoku grid
         """
-        if grid is not None:
-            self._grid = grid
-        else:
-            self._grid = self._get_new_grid(n=n)
-        self._unremovable_entries = [[val is not None for val in row] for row in self._grid]
+        self._grid = self._get_new_grid(n=n) if grid is None else grid
         self._n = n
-        self._original_grid = deepcopy(self._grid)
-        self._state = "INCOMPLETE"
+        self._original_grid = deepcopy(self._grid) if original_grid is None else original_grid
+        self._unremovable_entries = [[val is not None for val in row] for row in self._original_grid]
+        self._state = ""
+        self.update_game_state()
 
     def reset_game(self, new_board=True, n=3):
         """
@@ -72,7 +70,7 @@ class SudokuGame:
                                    [4, 6, 9, 2, 5, 7, 3, 8, 1],
                                    [3, 5, 1, 9, 8, 4, 7, 6, 2],
                                    [2, 8, 7, 6, 1, 3, 4, 5, 9]]
-        return easy_grid
+        return almost_solved_easy_grid
 
     def fill_number(self, row, col, num):
         """
@@ -83,11 +81,12 @@ class SudokuGame:
         if (row < 0) or (col < 0) or (row >= self._n ** 2) or (col >= self._n ** 2):
             return False
         elif self._grid[row][col] is not None:
-            return False
-        else:
-            self._grid[row][col] = num
-            self.update_game_state()
-            return True
+            removal_attempt = self.remove_number(row, col)
+            if not removal_attempt:
+                return False
+        self._grid[row][col] = num
+        self.update_game_state()
+        return True
 
     def get_grid(self):
         return self._grid
@@ -223,7 +222,18 @@ class SudokuGame:
         return
 
     def get_game_state(self):
+        """
+        Returns 'INCOMPLETE', 'INCORRECT', or 'CORRECT'
+        """
         return self._state
+
+    def get_original_grid(self):
+        return self._original_grid
+
+    def get_val_at(self, row, col):
+        if (row < 0) or (col < 0) or (row >= self._n ** 2) or (col >= self._n ** 2):
+            return None
+        return self._grid[row][col]
 
 
 class SudokuClient:
@@ -252,7 +262,7 @@ class SudokuClient:
                                                 "Please enter the number to fill in [1-9]: ")
                 success = self.game.fill_number(row_idx, col_idx, num)
                 if not success:
-                    print("You can't do that - maybe there's already a number there?")
+                    print("You can't do that - maybe there's a number there which was part of the original setup")
             elif self.input == 2:
                 valid_inputs = [0, 1, 2, 3, 4, 5, 6, 7, 8]
                 row_idx = self.get_valid_user_input(valid_inputs,
@@ -297,12 +307,11 @@ class SudokuClient:
                   "Select '0' to quit, unless you want to remove numbers and...fill them in again...for fun")
         print()
         print("0 - Quit\n"
-              "1 - Fill in a number\n"
-              "2 - Remove a number\n")
+              "1 - Fill in a number\n")
         print()
 
-        valid_inputs = [0, 1, 2]
-        input_prompt = "Please select a menu option [0, 1, 2]: "
+        valid_inputs = [0, 1]
+        input_prompt = "Please select a menu option [0, 1]: "
         error_msg = "Sorry, not a valid option"
         next_input = self.get_valid_user_input(valid_inputs, error_msg, input_prompt)
         self.input = next_input

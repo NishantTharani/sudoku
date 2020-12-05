@@ -18,22 +18,32 @@
             border-bottom: solid;
         }
     </style>
+
 {% endblock %}
 
 {% block body %}
 
-    <h1>Hello, Sudoku!</h1>
+    <script type="text/javascript">
+        function keyHandler(event) {
+            keyHandlerTemplate("{{ url_for('keypress') }}", event);
+        }
+    </script>
+
+    <h1 class="title">Hello, Sudoku!</h1>
 
     <div class="sudoku">
         <table id="sudokuGrid" border="1">
             {% for row in range(n*n) %}
                 <tr class="sudokuRow">
                     {% for col in range(n*n) %}
-                        {% if not grid[row][col] %}
-                            <td class="sudokuCell activeSudokuCell">
+                        {% if not original_grid[row][col] %}
+                            <td class="sudokuCell openSudokuCell" data-row="{{ row }}" data-col="{{ col }}">
+                                {% if grid[row][col] %}
+                                    {{ grid[row][col] }}
+                                {% endif %}
                             </td>
                         {% else %}
-                            <td class="sudokuCell">
+                            <td class="sudokuCell" data-row="{{ row }}" data-col="{{ col }}">
                                 {{ grid[row][col] }}
                             </td>
                         {% endif %}
@@ -41,8 +51,19 @@
                 </tr>
             {% endfor %}
         </table>
+        <div class="gameStatus">
+            <h3 class="gameStatusLine">Your game is:
+                {% if game_status == 'INCOMPLETE' %}
+                    <span class="gameStatusText incompleteText">incomplete :s</span>
+                {% elif game_status == 'INCORRECT' %}
+                    <span class="gameStatusText incorrectText">incorrectly solved! :(</span>
+                {% elif game_status == 'CORRECT' %}
+                    <span class="gameStatusText correctText">SOLVED :D</span>
+                {% endif %}
+            </h3>
+        </div>
     </div>
 
 
-
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sudoku.js') }}"></script>
 {% endblock %}

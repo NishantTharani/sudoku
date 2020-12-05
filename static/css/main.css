@@ -1,3 +1,8 @@
+.title {
+    text-align: center;
+    margin: 2rem 5rem 3rem;
+}
+
 #sudokuGrid {
     margin: 1em auto;
     border-collapse: collapse;
@@ -10,6 +15,16 @@
     text-align: center;
 }
 
-.activeSudokuCell:hover {
+.openSudokuCell:hover {
     background-color: red;
+}
+
+.activeSudokuCell {
+    background-color: lightblue;
+    border: 2px solid;
+}
+
+.gameStatus {
+    text-align: center;
+    margin: 2rem 0 0;
 }
