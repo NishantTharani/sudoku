@@ -40,6 +40,10 @@
             resetButtonTemplate("{{ url_for('reset') }}", 'EASY', event);
         }
 
+        function solveButtonHandler(event) {
+            resetButtonTemplate("{{ url_for('reset') }}", 'SOLVE', event);
+        }
+
     </script>
 
     <h1 class="title">Hello, Sudoku!</h1>
@@ -56,6 +60,7 @@
         <button class="resetButton gameButton">Reset Game</button>
         <button class="childlikeButton gameButton">New Game: Childlike</button>
         <button class="easyButton gameButton">New Game: Easy</button>
+        <button class="solveButton gameButton">Solve Game</button>
     </div>
 
 

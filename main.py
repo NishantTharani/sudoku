@@ -151,12 +151,77 @@ class SudokuGame:
         # print_col_headers(n)
         print()
 
+    def check_group(self, nums):
+        """
+        # A helper method to check that a list of n^2 numbers is a valid sudoku line/column/minibox
+        # Runs in O(n^2)
+        # Ignores empty boxes
+        """
+        if len(nums) != self._n ** 2:
+            return False
+        counters = [0] * 9
+        for num in nums:
+            if num is None:
+                continue
+            elif num < 1 or num > self._n ** 2:
+                return False
+            counters[num - 1] += 1
+        for c in counters:
+            if c != 1 and c != 0:
+                return False
+        return True
+
+    def get_row(self, row):
+        """
+        Returns an array corresponding to the row at index 'row'
+        """
+        return self._grid[row]
+
+    def get_col(self, col):
+        """
+        Returns an array corresponding to the column at index 'col'
+        """
+        nums = []
+        for row_idx in range(self._n ** 2):
+            nums.append(self._grid[row_idx][col])
+        return nums
+
+    def get_segment(self, row_idx, col_idx):
+        """
+        Returns an array corresponding to the segment that the value at (row_idx, col_idx) belongs to
+        """
+        row_idx = (row_idx // self._n) * self._n
+        col_idx = (col_idx // self._n) * self._n
+        mini_box = []
+        for i in range(self._n):
+            for j in range(self._n):
+                mini_box.append(self._grid[row_idx + i][col_idx + j])
+        return mini_box
+
+    def check_pos(self, row_idx, col_idx):
+        """
+        Checks whether the value entered at row, col breaks any rules or not
+        """
+        if self._grid[row_idx][col_idx] is None:
+            return True
+
+        row = self.get_row(row_idx)
+        col = self.get_col(col_idx)
+        segment = self.get_segment(row_idx, col_idx)
+        row_check = self.check_group(row)
+        col_check = self.check_group(col)
+        seg_check = self.check_group(segment)
+        return row_check and col_check and seg_check
+
     def update_game_state(self):
         """
         Updates self._state to the correct value given the current game state:
             'INCOMPLETE'
             'INCORRECT'
             'CORRECT'
+
+        This method repeats code from other methods in the class, but has been left as a whole so that the
+        requirements of CS325 are easier to check.
         """
         n = self._n
 
@@ -238,6 +303,85 @@ class SudokuGame:
             return None
         return self._grid[row][col]
 
+    def solve(self):
+        """
+        Solves the sudoku puzzle, setting self._grid to the solved grid and self._state to 'CORRECT'
+        """
+        self._grid = deepcopy(self._original_grid)
+        success = self.rec_solve(0, 0)
+        if not success:
+            raise RuntimeError
+        self.update_game_state()
+
+    def rec_solve(self, row, col):
+        """
+        Recursive helper function for self.solve
+        """
+        row, col = self.get_next_empty_pos(row, col)
+
+        # If we've passed the end, the puzzle is solved
+        if row is None:
+            return True
+
+        # Test each possible value
+        for val in range(1, self._n ** 2 + 1):
+            self.fill_number(row, col, val)
+            if self.check_pos(row, col):
+                # If the value seems to work, move on to checking the next cells
+                going_forward_works = self.rec_solve(row, col)
+                if going_forward_works:
+                    return True
+
+        # If none of the values work, return False so that we move back up in the stack and try another number in a
+        # previous cell
+        self.remove_number(row, col)
+        return False
+
+    def get_next_empty_pos(self, row, col):
+        """
+        Returns the co-ordinates of the next box that is empty, or None,None if that crosses the end of the puzzle
+        """
+        while self._grid[row][col] is not None:
+            row, col = self.next_pos(row, col)
+            if row is None:
+                return None, None
+        return row, col
+
+    def get_next_editable_pos(self, row, col):
+        """
+        Returns the co-ordinates of the next co-ordinate that the user can edit, or None,None if that crosses the end of
+        the puzzle
+        """
+        # a do-while loop?
+        while True:
+            row, col = self.next_pos(row, col)
+            if row is None:
+                return None, None
+            if not self._unremovable_entries[row][col]:
+                break
+        return row, col
+
+    def next_pos(self, row, col):
+        """
+        Returns the (row, col) tuple for the next co-ordinate in row-major order, or None if we're at the end
+        """
+        if col < self._n ** 2 - 1:
+            return row, col + 1
+
+        if row < self._n ** 2 - 1:
+            return row + 1, 0
+
+        return None, None
+
+    def prev_pos(self, row, col):
+        if col > 0:
+            return row, col - 1
+
+        if row > 0:
+            return row - 1, col
+
+        return None, None
+
 
 class SudokuClient:
     """
@@ -267,16 +411,7 @@ class SudokuClient:
                 if not success:
                     print("You can't do that - maybe there's a number there which was part of the original setup")
             elif self.input == 2:
-                valid_inputs = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-                row_idx = self.get_valid_user_input(valid_inputs,
-                                                    "Sorry, that's not a valid row index",
-                                                    "Please enter the row index of the grid entry to remove [0-8]: ")
-                col_idx = self.get_valid_user_input(valid_inputs,
-                                                    "Sorry, that's not a valid col index",
-                                                    "Please enter the col index of the grid entry to remove [0-8]: ")
-                success = self.game.remove_number(row_idx, col_idx)
-                if not success:
-                    print("You can't do that - maybe that grid entry is part of the original setup")
+                self.game.solve()
 
         print("Thank you for playing - goodbye!")
 
@@ -310,11 +445,12 @@ class SudokuClient:
                   "Select '0' to quit, unless you want to remove numbers and...fill them in again...for fun")
         print()
         print("0 - Quit\n"
-              "1 - Fill in a number\n")
+              "1 - Fill in a number\n"
+              "2 - Solve the puzzle\n")
         print()
 
-        valid_inputs = [0, 1]
-        input_prompt = "Please select a menu option [0, 1]: "
+        valid_inputs = [0, 1, 2]
+        input_prompt = "Please select a menu option [0, 1, 2]: "
         error_msg = "Sorry, not a valid option"
         next_input = self.get_valid_user_input(valid_inputs, error_msg, input_prompt)
         self.input = next_input

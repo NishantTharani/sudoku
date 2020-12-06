@@ -54,11 +54,16 @@ def keypress():
 
 @app.route('/_reset', methods=['POST'])
 def reset():
+    """
+    This method has ended up handling anything that requires the grid to be changed and then sent back to the front-end
+    """
     data = req.get_json()
     game = SudokuGame(session['n'], session['grid'], session['original_grid'])
     preference = data['request']
     if preference == 'RESET':
         game.reset_game(new_board=False)
+    elif preference == 'SOLVE':
+        game.solve()
     else:
         game.reset_game(preference=preference)
     session['grid'] = game.get_grid()
@@ -69,7 +74,6 @@ def reset():
                                 original_grid=game.get_original_grid(),
                                 n=game.get_n())
     return {'gridHTML': grid_html}
-    pass
 
 
 if __name__ == '__main__':

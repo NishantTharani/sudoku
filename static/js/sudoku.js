@@ -17,6 +17,8 @@ function mapHandlers() {
     $('.childlikeButton').on('click', childlikeButtonHandler);
 
     $('.easyButton').on('click', easyButtonHandler);
+
+    $('.solveButton').on('click', solveButtonHandler);
 }
 
 
