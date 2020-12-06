@@ -33,6 +33,7 @@ function resetButtonTemplate(url, preference, event) {
         success: function (data) {
             console.log('Reset Game Successfully');
             $('.sudokuGridContainer').html(data.gridHTML);
+            $('.gameStatus').html(data.stateHTML);
             mapHandlers();
         }
     })

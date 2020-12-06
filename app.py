@@ -69,11 +69,13 @@ def reset():
     session['grid'] = game.get_grid()
     session['original_grid'] = game.get_original_grid()
     session['n'] = game.get_n()
+    state_html = render_template('snippets/gamestatus.html', game_status=game.get_game_state())
     grid_html = render_template('snippets/sudokugrid.html',
                                 grid=game.get_grid(),
                                 original_grid=game.get_original_grid(),
                                 n=game.get_n())
-    return {'gridHTML': grid_html}
+    return {'gridHTML': grid_html,
+            'stateHTML': state_html}
 
 
 if __name__ == '__main__':
