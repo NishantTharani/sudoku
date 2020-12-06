@@ -3,6 +3,12 @@
     margin: 2rem 5rem 3rem;
 }
 
+.caption {
+    text-align: center;
+    margin: 1rem 5rem 1rem;
+    color: darkslategray;
+}
+
 #sudokuGrid {
     margin: 1em auto;
     border-collapse: collapse;
