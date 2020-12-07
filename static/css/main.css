@@ -30,6 +30,11 @@
     border: 2px solid;
 }
 
+.closedSudokuCell {
+    font-weight: bold;
+    background-color: lightgray;
+}
+
 .gameStatus {
     text-align: center;
     margin: 2rem 0 0;

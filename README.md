@@ -1,8 +1,15 @@
 # Playing the Sudoku Game
+
+## From the console
 1) Python 3 is required. Run `python3 main.py` to play the Sudoku game
-2) Use the menu options to fill in and remove numbers. Note that numbers prefilled in the grid cannot be removed
-3) When the grid is completed, it'll be printed together with a message the indicates whether your solution is correct or not.
-4) If your solution is incorrect, feel free to remove numbers and try to get it right.
+2) Use the menu option '1' to fill numbers in by following the instructions. If you specify a co-ordinate that already has a number, it will be overwritten if possible. Note that numbers prefilled in the grid cannot be overwritten - if you try to do so, you will be presented with an error message.
+3) With each update, the grid will be reprinted with a status message that indicates whether your grid is incomplete, complete but incorrect, or complete and correct. Thus when the grid is completed, it'll be printed together with a message that indicates whether your solution is correct or not.
+4) If your solution is incorrect, feel free to overwrite your earlier inputs until you can get it right. Alternatively you can use the menu option '3' to reset the board to the initial state.
+5) At any point you can use the menu option '2' to solve the puzzle and display the completed grid.
+
+## On the internet
+
+The game is much easier to play using the web app - https://sudokuchecker.herokuapp.com/ . All the above functionality is available.  
 
 # Reduction.py
 

@@ -51,7 +51,7 @@ class SudokuGame:
         :return: list of lists of ints corresponding to the game state; blank squares are None
         """
         # TODO implement generation of a new grid
-        if preference is None or preference == 'CHILDLIKE':
+        if preference == 'CHILDLIKE':
             grid = [[None, 9, 2, 3, 7, 8, 1, 4, 5],
                     [8, None, 5, 4, 2, 9, 6, 7, 3],
                     [7, 3, 4, 5, 6, 1, 2, 9, 8],
@@ -61,7 +61,7 @@ class SudokuGame:
                     [4, 6, 9, 2, 5, 7, 3, 8, 1],
                     [3, 5, 1, 9, 8, 4, 7, 6, 2],
                     [2, 8, 7, 6, 1, 3, 4, 5, 9]]
-        elif preference == 'EASY':
+        elif preference is None or preference == 'EASY':
             grid = [[None, None, None, None, 7, 8, None, None, 5],
                     [None, None, 5, 4, 2, 9, None, None, None],
                     [7, 3, None, None, None, 1, None, 9, None],
@@ -412,6 +412,8 @@ class SudokuClient:
                     print("You can't do that - maybe there's a number there which was part of the original setup")
             elif self.input == 2:
                 self.game.solve()
+            elif self.input == 3:
+                self.game.reset_game(new_board=False)
 
         print("Thank you for playing - goodbye!")
 
@@ -446,11 +448,12 @@ class SudokuClient:
         print()
         print("0 - Quit\n"
               "1 - Fill in a number\n"
-              "2 - Solve the puzzle\n")
+              "2 - Solve the puzzle\n"
+              "3 - Reset to original state \n")
         print()
 
-        valid_inputs = [0, 1, 2]
-        input_prompt = "Please select a menu option [0, 1, 2]: "
+        valid_inputs = [0, 1, 2, 3]
+        input_prompt = "Please select a menu option [0, 1, 2, 3]: "
         error_msg = "Sorry, not a valid option"
         next_input = self.get_valid_user_input(valid_inputs, error_msg, input_prompt)
         self.input = next_input
