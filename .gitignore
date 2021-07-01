@@ -1,11 +1,14 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/macos,intellij,python,flask
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,intellij,python,flask
+# Created by https://www.toptal.com/developers/gitignore/api/flask,python,macos,jetbrains+all,react
+# Edit at https://www.toptal.com/developers/gitignore?templates=flask,python,macos,jetbrains+all,react
+
+TempOLD/
 
 ### Flask ###
 instance/*
 !instance/.gitignore
 .webassets-cache
+.env
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
@@ -24,8 +27,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
 parts/
 sdist/
 var/
@@ -102,6 +103,9 @@ ipython_config.py
 #   install all needed dependencies.
 #Pipfile.lock
 
+# poetry
+#poetry.lock
+
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
 
@@ -113,9 +117,9 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-config.py
-.env
-.venv
+# .env
+.env/
+.venv/
 env/
 venv/
 ENV/
@@ -144,10 +148,17 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# operating system-related files
+# file properties cache/storage on macOS
+*.DS_Store
+# thumbnail cache on Windows
+Thumbs.db
+
 # profiling data
 .prof
 
-### Intellij ###
+
+### JetBrains+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -220,35 +231,21 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-### Intellij Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+### JetBrains+all Patch ###
+# Ignores the whole .idea folder and all .iml files
+# See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
 
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
+.idea/
+
+# Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
+
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
 
 # Sonarlint plugin
-# https://plugins.jetbrains.com/plugin/7973-sonarlint
-.idea/**/sonarlint/
-
-# SonarQube Plugin
-# https://plugins.jetbrains.com/plugin/7238-sonarqube-community-plugin
-.idea/**/sonarIssues.xml
-
-# Markdown Navigator plugin
-# https://plugins.jetbrains.com/plugin/7896-markdown-navigator-enhanced
-.idea/**/markdown-navigator.xml
-.idea/**/markdown-navigator-enh.xml
-.idea/**/markdown-navigator/
-
-# Cache file creation bug
-# See https://youtrack.jetbrains.com/issue/JBR-2257
-.idea/$CACHE_FILE$
-
-# CodeStream plugin
-# https://plugins.jetbrains.com/plugin/12206-codestream
-.idea/codestream.xml
+.idea/sonarlint
 
 ### macOS ###
 # General
@@ -318,6 +315,8 @@ Temporary Items
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
 
+# poetry
+
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 
 # Celery stuff
@@ -325,6 +324,7 @@ Temporary Items
 # SageMath parsed files
 
 # Environments
+# .env
 
 # Spyder project settings
 
@@ -338,6 +338,48 @@ Temporary Items
 
 # pytype static type analyzer
 
+# operating system-related files
+# file properties cache/storage on macOS
+# thumbnail cache on Windows
+
 # profiling data
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,intellij,python,flask
+
+### react ###
+.DS_*
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch
+
+# End of https://www.toptal.com/developers/gitignore/api/flask,python,macos,jetbrains+all,react# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
