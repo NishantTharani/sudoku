@@ -1,23 +1,70 @@
-# Playing the Sudoku Game
+# Getting Started with Create React App
 
-## From the console
-1) Python 3 is required. Run `python3 main.py` to play the Sudoku game
-2) Use the menu option '1' to fill numbers in by following the instructions. If you specify a co-ordinate that already has a number, it will be overwritten if possible. Note that numbers prefilled in the grid cannot be overwritten - if you try to do so, you will be presented with an error message.
-3) With each update, the grid will be reprinted with a status message that indicates whether your grid is incomplete, complete but incorrect, or complete and correct. Thus when the grid is completed, it'll be printed together with a message that indicates whether your solution is correct or not.
-4) If your solution is incorrect, feel free to overwrite your earlier inputs until you can get it right. Alternatively you can use the menu option '3' to reset the board to the initial state.
-5) At any point you can use the menu option '2' to solve the puzzle and display the completed grid.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## On the internet
+## Available Scripts
 
-The game is much easier to play using the web app - https://sudokuchecker.herokuapp.com/ . All the above functionality is available.  
+In the project directory, you can run:
 
-# Reduction.py
+### `yarn start`
 
-`reduction.py` illustrates how an instance of the 3x3 Latin Square Completion problem can be reduced to an instance of a corresponding Sudoku problem. 
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Simple usage: running `python3 reduction.py` will show how the reduction of a predefined 3x3 latin square problem to a 9x9 sudoku grid.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-Advanced usage:
-1) Using Python 3, import the module: `import reduction as red`
-2) Define your 3x3 latin square grid as a list of lists: `square = [[1, 2, None], [None, 3, 1], [3, None, 2]]`
-3) Run `red.make_sudoku_from_square(square)` and view the reduction.
+### `yarn test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `yarn build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `yarn eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `yarn build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
