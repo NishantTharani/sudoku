@@ -24,32 +24,40 @@ def generate_completed_grid(n=3, start_with=11) -> tuple:
     return get_solutions(grid.get_grid(), 1)
 
 
-def generate_new_puzzle(completed_grid: list[list[int]], difficulty=3):
+def generate_new_puzzle(completed_grid: None = list[list[int]], difficulty=3):
     """Generates a new puzzle by starting with a completed grid and then trying to delete cells one by one.
 
     The number of cells to delete is determined by the difficulty level. Given this number, we randomly choose cells
     to try and delete. A deletion is successful if it leaves the puzzle with just one unique solution. Note that if a
     deletion is unsuccessful, we never try to delete this cell again.
     """
+    if completed_grid is None:
+        completed_grid = generate_completed_grid(n=3, start_with=11)[0]
+
     grid = Grid(completed_grid)
     height = grid.n ** 2
     size = height ** 2
+    left_in_row = [height] * height
+    left_in_col = [height] * height
 
     if difficulty == 3:
         deletions = int(0.75 * size)
+        min_per_row_col = 4
     else:
         raise ValueError
 
-    cells_to_delete = list(range(1, (height) + 1))
+    cells_to_delete = list(range(1, height + 1))
     random.shuffle(cells_to_delete)
     deleted = 0
 
-    while deleted < deletions:
+    while (deleted < deletions) and (len(cells_to_delete) > 0):
         idx = cells_to_delete.pop()
-        # TODO check if this would violate lower bound on per-row / per-col givens
-        
         row = idx // height
         col = idx % height
+
+        # Would deleting this violate the lower bound on cells per row/col?
+        if left_in_row[row] <= min_per_row_col or left_in_col[col] <= min_per_row_col:
+            continue
 
         # remove the number at this position
         num = grid.remove_number(row, col)
