@@ -1,7 +1,18 @@
+.gridHolder {
+    margin-top: 20rem;
+}
+
+.gameState {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
 .grid {
     display: table;
     width: 50%;
-    margin-top: 20rem;
     margin-left: auto;
     margin-right: auto;
 }
@@ -19,6 +30,19 @@
     border-top: 1px solid gray;
     border-left: 1px solid grey;
     cursor: default;
+    color: gray;
+}
+
+.cell.originalCell {
+    color: black;
+}
+
+.cell.activeCell {
+    background-color: aqua;
+}
+
+.cell.activeCell.originalCell {
+    background-color: red;
 }
 
 .cell.top {

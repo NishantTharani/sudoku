@@ -1,9 +1,23 @@
 # Author: Nishant Tharani
 # Description:
 
-from api.grid import Grid
+from .grid import Grid
 import random
 import time
+
+
+def check_grid(grid_values: list[list[int]]) -> str:
+    """Checks the current state of the sudoku grid.
+
+    Returns:
+        "incorrect", or "correct"
+    """
+    grid = Grid(grid_values)
+    correct = grid.check_solution()
+    if correct:
+        return "correct"
+    else:
+        return "incorrect"
 
 
 def generate_completed_grid(n=3, start_with=12) -> tuple:
@@ -38,17 +52,19 @@ def generate_completed_grid(n=3, start_with=12) -> tuple:
     return final_history, final_grid
 
 
-def generate_new_puzzle(completed_grid: list[list[int]] = None, difficulty=3):
+def generate_new_puzzle(completed_grid: list[list[int]] = None, difficulty=3) -> list[list[int]]:
     """Generates a new puzzle by starting with a completed grid and then trying to delete cells one by one.
 
     The number of cells to delete is determined by the difficulty level. Given this number, we randomly choose cells
     to try and delete. A deletion is successful if it leaves the puzzle with just one unique solution. Note that if a
     deletion is unsuccessful, we never try to delete this cell again.
+
+    Returns:
+        A 2D list of ints representing a Sudoku puzzle with a unique solution
     """
     if completed_grid is None:
         completed_grid = generate_completed_grid(n=3, start_with=11)[1]
 
-    print(completed_grid)
     grid = Grid(completed_grid)
     height = grid.n ** 2
     size = height ** 2
@@ -61,7 +77,7 @@ def generate_new_puzzle(completed_grid: list[list[int]] = None, difficulty=3):
     else:
         raise ValueError
 
-    cells_to_delete = list(range(1, height + 1))
+    cells_to_delete = list(range(size))
     random.shuffle(cells_to_delete)
     deleted = 0
 
@@ -76,11 +92,15 @@ def generate_new_puzzle(completed_grid: list[list[int]] = None, difficulty=3):
 
         # remove the number at this position
         num = grid.remove_number(row, col)
+        left_in_row[row] -= 1
+        left_in_col[col] -= 1
 
         # check if there is a solution with any other number
         nums_to_check = [i for i in range(1, height + 1) if i != num]
         for num_to_check in nums_to_check:
-            _, solutions = get_solutions(grid.get_grid(), 1)
+            grid.fill_number(row, col, num_to_check)
+            _, solutions, _ = get_solutions(grid.get_grid(), 1)
+            grid.remove_number(row, col)
             if len(solutions) > 0:
                 # if so, put the number back and move on
                 grid.fill_number(row, col, num)
@@ -134,8 +154,9 @@ def rec_get_solutions(grid: Grid, row: int, col: int, histories: list[list[tuple
 
     # If we've passed the end, we've finished
     if row is None:
-        histories.append([])
-        solutions.append(grid.get_grid())
+        if grid.check_solution():
+            histories.append([])
+            solutions.append(grid.get_grid())
         return False
 
     # Test each possible value
