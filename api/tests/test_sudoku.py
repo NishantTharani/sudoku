@@ -8,3 +8,8 @@ def test_generate_completed_grid():
         print(grid)
         assert Grid(grid).check_solution()
 
+
+def test_generate_new_puzzle():
+    for _ in range(50):
+        grid = sudoku.generate_new_puzzle(difficulty=3)
+        print(grid)
