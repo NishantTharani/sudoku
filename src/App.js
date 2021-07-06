@@ -29,6 +29,7 @@ function Grid(props) {
   let setGrid = props.setGrid;
   let grid = props.grid;
   let out = [];
+  const changeCell = props.changeCell;
 
   let [activeRow, setActiveRow] = useState(-1);
   let [activeCol, setActiveCol] = useState(-1);
@@ -77,20 +78,11 @@ function Grid(props) {
       case 46:
         const canEditCell = props.originalGrid[activeRow][activeCol] === 0;
         if (canEditCell) {
-          const newGrid = [];
-          grid.forEach(row => {
-            const newRow = [];
-            row.forEach(cell => {
-              newRow.push(cell);
-            })
-            newGrid.push(newRow);
-          });
           if (keyCode >= 49 && keyCode <= 57) {
-            newGrid[activeRow][activeCol] = keyCode - 48;
+            changeCell(activeRow, activeCol, keyCode - 48);
           } else if (keyCode === 8 || keyCode === 46) {
-            newGrid[activeRow][activeCol] = 0;
+            changeCell(activeRow, activeCol, 0);
           }
-          setGrid(newGrid);
         }
         break;
       default:
@@ -107,6 +99,11 @@ function Grid(props) {
     };
   }, [activeCol, activeRow]);
 
+  React.useEffect(() => {
+    setActiveRow(-1);
+    setActiveCol(-1);
+  }, [props.originalGrid])
+
   for (let row = 0; row < height; row++) {
     let rowList = []
     for (let col = 0; col < height; col++) {
@@ -121,12 +118,14 @@ function Grid(props) {
       let isMiniRight = !isRight && (col + 1) % n === 0;
       let isOriginalCell = props.originalGrid[row][col] !== 0;
       let isActiveCell = row === activeRow && col === activeCol;
-      let val = props.grid[row][col];
+      let isOldVal = props.grid[row][col] < 0;
+      let val = Math.abs(props.grid[row][col]);
       rowList.push(<div key={i.toString()} data-row={row} data-col={col}
                           className={`cell ${isTop ? "top" : ""} ${isBottom ? "bottom" : ""} ${isLeft ? "left" : ""} ${isRight ? "right" : ""}
                                                 ${isMiniTop ? "miniTop" : ""} ${isMiniBottom ? "miniBottom" : ""}
                                                 ${isMiniLeft ? "miniLeft" : ""} ${isMiniRight ? "miniRight" : ""}
-                                                ${isOriginalCell ? "originalCell" : ""} ${isActiveCell ? "activeCell" : ""}`}
+                                                ${isOriginalCell ? "originalCell" : ""} ${isActiveCell ? "activeCell" : ""}
+                                                ${isOldVal ? "oldCell" : ""}`}
                   onMouseDown={_cellOnClick}> {val !== 0 ? val : ""} </div> )
     }
     out.push(<div key={row.toString()} className={'row'}>{rowList}</div> )
@@ -135,6 +134,76 @@ function Grid(props) {
   return (
       <div className={'grid'}>{out}</div>
   );
+}
+
+function NewGameButton(props) {
+  const setGrid = props.setGrid;
+  const setOriginalGrid = props.setOriginalGrid;
+  const setN = props.setN;
+
+  function _handleNewGameClick(e) {
+    fetch('/api/new_puzzle')
+        .then(response => response.text())
+        .then(data => JSON.parse(data))
+        .then(newGame => {
+          console.log(newGame.grid);
+          setOriginalGrid(newGame.grid);
+          setGrid(newGame.grid);
+          setN(newGame.n);
+        });
+  }
+
+  return (
+      <button onClick={_handleNewGameClick}>New Game</button>
+  )
+}
+
+function SolveGameButton(props) {
+  const setGrid = props.setGrid;
+  const originalGrid = props.originalGrid;
+  const changeCell = props.changeCell;
+
+  function _handleSolveGameClick(e) {
+    fetch('/api/solve_puzzle', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        grid: originalGrid
+      })
+    })
+        .then(response => response.text())
+        .then(data => JSON.parse(data))
+        .then(data => {
+          const history = data.history;
+          const interval = 100;
+          let timeout = 0;
+
+          history.forEach(change => {
+            setTimeout(() => {
+              changeCell(change[0], change[1], change[2]);
+            }, timeout)
+            timeout += interval;
+          })
+
+          console.log(history);
+        })
+    }
+
+  return (
+      <button onClick={_handleSolveGameClick}>Solve Game</button>
+  )
+}
+
+function BottomBar(props) {
+  return (
+      <div className={'bottomBar'}>
+        <NewGameButton setGrid={props.setGrid} setOriginalGrid={props.setOriginalGrid} setN={props.setN} />
+        <SolveGameButton setGrid={props.setGrid} originalGrid={props.originalGrid} changeCell={props.changeCell} />
+      </div>
+  )
 }
 
 function App() {
@@ -153,7 +222,21 @@ function App() {
           setGrid(newGame.grid);
           setN(newGame.n);
         });
+  }
 
+  function changeCell(row, col, val) {
+    setGrid(grid => {
+      const newGrid = [];
+      grid.forEach(row => {
+        const newRow = [];
+        row.forEach(cell => {
+          newRow.push(cell);
+        })
+        newGrid.push(newRow);
+      });
+      newGrid[row][col] = val;
+      return newGrid;
+    });
   }
 
   useEffect(() => {
@@ -195,8 +278,10 @@ function App() {
   return (
     <div className="App">
       <div className={'gridHolder'}>
-      <Status gameState={gameState} />
-      <Grid originalGrid={originalGrid} grid={grid} n={n} setGrid={setGrid} />
+        <Status gameState={gameState} />
+        <Grid originalGrid={originalGrid} grid={grid} n={n} setGrid={setGrid} changeCell={changeCell}/>
+        <BottomBar setGrid={setGrid} setOriginalGrid={setOriginalGrid} setN={setN} originalGrid={originalGrid}
+                  changeCell={changeCell} />
       </div>
     </div>
   );

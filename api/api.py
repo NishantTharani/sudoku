@@ -40,6 +40,15 @@ def check_puzzle():
     return jsonify(out)
 
 
+@app.route('/api/solve_puzzle', methods=['POST'])
+def solve_puzzle():
+    grid = request.json['grid']
+    histories, solutions, time_limit_exceeded = sudoku.get_solutions(grid, stop_at=1)
+    out = {'history': histories[0],
+           'solution': solutions[0]}
+    return jsonify(out)
+
+
 @app.route('/api/time', methods=['GET'])
 def get_time():
     return "100"
