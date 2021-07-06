@@ -3,6 +3,7 @@
 
 import math
 import random
+import copy
 
 
 class Grid:
@@ -22,8 +23,21 @@ class Grid:
         if n ** 2 != height:
             raise ValueError
 
-        self._grid = grid
+        self._original_grid = copy.deepcopy(grid)
+        self._grid = copy.deepcopy(grid)
+        self._random_group = list(range(1, height + 1))
+        random.shuffle(self._random_group)
         self.n = n
+        self.height = self.n ** 2
+
+    def allowed_values_at(self, row_idx, col_idx):
+        allowed_values = set(self._random_group)
+        row = set(self.get_row(row_idx))
+        col = set(self.get_col(col_idx))
+        group = set(self.get_segment(row_idx, col_idx))
+        out = list(allowed_values.difference(row).difference(col).difference(group))
+        random.shuffle(out)
+        return out
 
     def check_group(self, nums: list[int]):
         """
@@ -31,15 +45,10 @@ class Grid:
         # Runs in O(n^2)
         # Ignores empty boxes
         """
-        if len(nums) != self.n ** 2:
-            return False
-        counters = [0] * 9
+        counters = [0] * self.height
         for num in nums:
-            if num is None:
-                continue
-            elif num < 1 or num > self.n ** 2:
-                return False
-            counters[num - 1] += 1
+            if 1 <= num <= self.height:
+                counters[num - 1] += 1
         for c in counters:
             if c != 1 and c != 0:
                 return False
@@ -118,6 +127,8 @@ class Grid:
             if self.check_pos(row, col):
                 return
 
+        raise ValueError
+
     def get_grid(self):
         return self._grid
 
@@ -126,7 +137,7 @@ class Grid:
         Returns the co-ordinates of the next box that is empty, starting from (row,col),
          or None,None if that crosses the end of the puzzle
         """
-        while self._grid[row][col] is not None:
+        while self._grid[row][col] != 0:
             row, col = self.get_next_pos(row, col)
             if row is None:
                 return None, None
@@ -167,7 +178,7 @@ class Grid:
         Returns an array corresponding to the column at index 'col'
         """
         nums = []
-        for row_idx in range(self.n ** 2):
+        for row_idx in range(self.height):
             nums.append(self._grid[row_idx][col])
         return nums
 
