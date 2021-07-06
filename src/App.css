@@ -1,5 +1,5 @@
 .gridHolder {
-    margin-top: 20rem;
+    margin-top: 10rem;
 }
 
 .gameState {
@@ -31,6 +31,11 @@
     border-left: 1px solid grey;
     cursor: default;
     color: gray;
+}
+
+.cell.oldCell {
+    text-decoration: line-through;
+    color: red;
 }
 
 .cell.originalCell {
@@ -67,4 +72,12 @@
 
 .cell.miniLeft {
     border-left: 2px solid black;
+}
+
+.bottomBar {
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
 }

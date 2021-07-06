@@ -127,7 +127,7 @@ def get_solutions(original_grid_values: list[list[int]], stop_at: int = None, ti
 
         solutions:      is a list of solved grids, each represented as a 2D list
 
-
+        time_limit_reached:     True if a time limit was specified and exceeded, else false
     """
     histories = [[]]
     solutions = []
