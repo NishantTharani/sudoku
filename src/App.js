@@ -26,11 +26,6 @@ function Grid(props) {
     out.push(<div key={row.toString()} className={'row'}>{rowList}</div> )
   }
 
-  for (let i = 0; i < height ** 2; i++) {
-
-
-      }
-
   return (
       <div className={'grid'}>{out}</div>
   );

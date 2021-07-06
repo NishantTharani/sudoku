@@ -1,30 +1,44 @@
 # Author: Nishant Tharani
 # Description:
 
-from grid import Grid
+from api.grid import Grid
 import random
+import time
 
 
-def generate_completed_grid(n=3, start_with=11) -> tuple:
+def generate_completed_grid(n=3, start_with=12) -> tuple:
     """Generates a random completed sudoku grid
+
+    Args:
+        n:                  the height of a minibox, usually 3 with normal sudoku
+        start_with:         the number of cells to manually fill in before sending the partial grid to be solved
     """
 
     height = n ** 2
-    empty_grid = [[0 * height] * height]
-    grid = Grid(empty_grid)
-    cells_to_fill = list(range(1, (n ** 2) + 1))
-    random.shuffle(cells_to_fill)
+    empty_grid = [[0 for _ in range(height)] for _ in range(height)]
+    final_history, final_grid = None, None
+    attempts = 0
 
-    for i in range(start_with):
-        idx = cells_to_fill[i]
-        row = idx // height
-        col = idx % height
-        grid.fill_random_number(row, col)
+    while final_grid is None:
+        attempts += 1
+        grid = Grid(empty_grid)
+        cells_to_fill = list(range(0, n ** 4))
+        random.shuffle(cells_to_fill)
 
-    return get_solutions(grid.get_grid(), 1)
+        for i in range(start_with):
+            idx = cells_to_fill[i]
+            row = idx // height
+            col = idx % height
+            grid.fill_random_number(row, col)
+
+        histories, grids, _ = get_solutions(grid.get_grid(), 1, time_limit=2.0)
+        if len(grids) >= 1:
+            final_history, final_grid = histories[0], grids[0]
+
+    return final_history, final_grid
 
 
-def generate_new_puzzle(completed_grid: None = list[list[int]], difficulty=3):
+def generate_new_puzzle(completed_grid: list[list[int]] = None, difficulty=3):
     """Generates a new puzzle by starting with a completed grid and then trying to delete cells one by one.
 
     The number of cells to delete is determined by the difficulty level. Given this number, we randomly choose cells
@@ -32,8 +46,9 @@ def generate_new_puzzle(completed_grid: None = list[list[int]], difficulty=3):
     deletion is unsuccessful, we never try to delete this cell again.
     """
     if completed_grid is None:
-        completed_grid = generate_completed_grid(n=3, start_with=11)[0]
+        completed_grid = generate_completed_grid(n=3, start_with=11)[1]
 
+    print(completed_grid)
     grid = Grid(completed_grid)
     height = grid.n ** 2
     size = height ** 2
@@ -77,12 +92,13 @@ def generate_new_puzzle(completed_grid: None = list[list[int]], difficulty=3):
     return grid.get_grid()
 
 
-def get_solutions(original_grid_values: list[list[int]], stop_at: int = None) -> tuple:
+def get_solutions(original_grid_values: list[list[int]], stop_at: int = None, time_limit: float = None) -> tuple:
     """Solves the sudoku puzzle, taking the provided values as ground truth
 
     Args:
         original_grid_values:   2D representation of sudoku grid to try and solve
         stop_at:                if set, the maximum number of solutions to find
+        time_limit:             if set, the maximum amount of time to run the solver for
 
     Returns a tuple:
         histories:      is a list[list[tuple]]. Each inner list is an ordered list of (row, col, value) tuples which
@@ -90,38 +106,50 @@ def get_solutions(original_grid_values: list[list[int]], stop_at: int = None) ->
                         list can be used to render an animation showing the backtracking visually.
 
         solutions:      is a list of solved grids, each represented as a 2D list
+
+
     """
     histories = [[]]
     solutions = []
     grid = Grid(original_grid_values)
-    rec_get_solutions(grid, 0, 0, histories, solutions, stop_at)
-    return histories, solutions
+    if time_limit is not None:
+        end_time = time.time() + time_limit
+    else:
+        end_time = time.time() + 36000  # yes, a magic number. It shouldn't ever matter
+    time_limit_reached = rec_get_solutions(grid, 0, 0, histories, solutions, stop_at, end_time)
+    return histories, solutions, time_limit_reached
 
 
 def rec_get_solutions(grid: Grid, row: int, col: int, histories: list[list[tuple]],
-                      solutions: list[list[list[int]]], stop_at: int):
+                      solutions: list[list[list[int]]], stop_at: int, end_time: float) -> bool:
     """Recursive helper function for get_solution
 
     The recursive function will only ever be operating on boxes that were empty to begin with, so no need to keep
     track of the original grid
+
+    Returns:
+        True            if the time limit specified by 'end_time' was exceeded, else False
     """
     row, col = grid.get_next_empty_pos(row, col)
 
-    # If we've passed the end, we've found a solution
+    # If we've passed the end, we've finished
     if row is None:
         histories.append([])
         solutions.append(grid.get_grid())
-        return
+        return False
 
     # Test each possible value
-    for val in range(1, grid.n ** 2 + 1):
+    allowed_values = grid.allowed_values_at(row, col)
+    for val in allowed_values:
         grid.fill_number(row, col, val)
         histories[-1].append((row, col, val))
         if grid.check_pos(row, col):
             # If the value seems to work, move on to checking the next cells
-            rec_get_solutions(grid, row, col, histories, solutions)
+            rec_get_solutions(grid, row, col, histories, solutions, stop_at, end_time)
+            if time.time() > end_time:
+                return True
             if stop_at is not None and len(solutions) >= stop_at:
-                return
+                return False
 
     # If none of the values work, return False so that we move back up in the stack and try another number in a
     # previous cell
