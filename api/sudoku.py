@@ -135,7 +135,7 @@ def get_solutions(original_grid_values: list[list[int]], stop_at: int = None, ti
     if time_limit is not None:
         end_time = time.time() + time_limit
     else:
-        end_time = time.time() + 36000  # yes, a magic number. It shouldn't ever matter
+        end_time = time.time() + 36000  # yes, a magic number. It shouldn't ever matter...
     time_limit_reached = rec_get_solutions(grid, 0, 0, histories, solutions, stop_at, end_time)
     return histories, solutions, time_limit_reached
 
@@ -172,11 +172,11 @@ def rec_get_solutions(grid: Grid, row: int, col: int, histories: list[list[tuple
             if stop_at is not None and len(solutions) >= stop_at:
                 return False
 
-    # If none of the values work, return False so that we move back up in the stack and try another number in a
-    # previous cell
+    # If none of the values work, move back up in the stack and try another number in a previous cell
     old_num = grid.get_pos(row, col)
-    grid.remove_number(row, col)
-    histories[-1].append((row, col, -old_num))
+    if old_num != 0:
+        grid.remove_number(row, col)
+        histories[-1].append((row, col, -old_num))
 
 
 

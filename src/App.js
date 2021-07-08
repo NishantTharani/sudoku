@@ -181,8 +181,15 @@ function SolveGameButton(props) {
           const interval = 100;
           let timeout = 0;
 
+          if (history[2] === 0) {
+            console.log('here');
+          }
+
           history.forEach(change => {
             setTimeout(() => {
+              if (change[2] === 0) {
+                console.log('here');
+              }
               changeCell(change[0], change[1], change[2]);
             }, timeout)
             timeout += interval;
