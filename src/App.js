@@ -251,7 +251,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    let checkGrid = true;
+    let checkGrid = grid.length > 0;
     grid.forEach(row => {
       row.forEach(cell => {
         if (cell === 0) {
