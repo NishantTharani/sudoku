@@ -12,7 +12,8 @@
 
 .grid {
     display: table;
-    width: 50%;
+    width: 60vmin;
+    height: 60vmin;
     margin-left: auto;
     margin-right: auto;
 }
