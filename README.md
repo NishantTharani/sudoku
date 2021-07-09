@@ -6,7 +6,7 @@ Animated Sudoku is (surprise) a Sudoku game where you can choose between solving
 
 Try it out at https://sudokuanimated.herokuapp.com/ - not yet optimised for mobiles.
 
-[gif here]
+![demo](/Users/nish-work/WorkRepos/sudoku/demo.gif)
 
 Features include:
 
