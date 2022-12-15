@@ -1,3 +1,8 @@
+body {
+    /*background-color: #444444;*/
+}
+
+
 .gridHolder {
     margin-top: 10rem;
 }
@@ -8,30 +13,42 @@
     width: 50%;
     text-align: center;
     margin-bottom: 1rem;
+    /*color: #f3f3f3;*/
 }
 
 .grid {
     display: table;
-    width: 60vmin;
-    height: 60vmin;
+    /*width: 60vmin;*/
+    /*height: 60vmin;*/
+    width: 500px;
+    max-width: 95%;
+    aspect-ratio: 1 / 1;
     margin-left: auto;
     margin-right: auto;
+    /*padding-left: 5px;*/
+    /*padding-right: 5px;*/
 }
 
 .grid>.row {
     display: table-row;
     margin-top: 1rem;
+    height: 11.111%;
 }
 
 .cell {
     display: table-cell;
-    padding: 1rem;
+    /*padding: 1rem;*/
+    width: 11.111%;
+
     text-align: center;
+    vertical-align: middle;
     font-size: 1.2rem;
     border-top: 1px solid gray;
     border-left: 1px solid grey;
     cursor: default;
     color: gray;
+
+    /*border-color: white;*/
 }
 
 .cell.oldCell {

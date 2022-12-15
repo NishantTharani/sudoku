@@ -4,6 +4,8 @@
 
 TempOLD/
 
+venv/**
+
 ### Flask ###
 instance/*
 !instance/.gitignore
