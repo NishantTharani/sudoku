@@ -4,7 +4,7 @@
 
 Animated Sudoku is (surprise) a Sudoku game where you can choose between solving the puzzle yourself or watching the computer do it. 
 
-Try it out at https://sudokuanimated.herokuapp.com/ - not yet optimised for mobiles.
+Try it out at https://animated-sudoku.onrender.com/ - not yet optimised for mobile.
 
 <img src="demo.gif" width="431" height="485">
 
