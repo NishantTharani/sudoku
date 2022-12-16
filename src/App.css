@@ -70,7 +70,7 @@ body {
     }
 
     to {
-        background-color: #cfb2b3;
+        background-color: #ff736b;
     }
 }
 
@@ -84,8 +84,8 @@ body {
     animation-name: comp-deleted;
     animation-duration: 1000ms;
     text-decoration: line-through;
-    color: red;
-    background-color: #cfb2b3;
+    color: #ac0000;
+    background-color: #ff736b;
     /*background: linear-gradient(to bottom right, #eeeeee, #eeeeee 48%, #ff6294 48%, #ff6294 52%, #eeeeee 52%, #eeeeee);*/
 }
 
