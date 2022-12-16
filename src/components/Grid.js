@@ -1,11 +1,14 @@
 import React, {useState} from "react";
 
+const classNames = require('classnames')
+
 
 function Grid(props) {
     let height = props.n ** 2;
     let n = props.n;
     let setGrid = props.setGrid;
     let grid = props.grid;
+    let wrongCells = props.wrongCells
     let out = [];
     const changeCell = props.changeCell;
 
@@ -82,6 +85,7 @@ function Grid(props) {
         setActiveCol(-1);
     }, [props.originalGrid])
 
+    /*
     for (let row = 0; row < height; row++) {
         let rowList = []
         for (let col = 0; col < height; col++) {
@@ -108,9 +112,63 @@ function Grid(props) {
         }
         out.push(<div key={row.toString()} className={'row'}>{rowList}</div> )
     }
+     */
 
     return (
-        <div className={'grid'}>{out}</div>
+        // <div className={'grid'}>{out}</div>
+        <div className={'grid'}>
+            {
+            grid.map((row, rowIdx) =>
+                <div key={rowIdx.toString()} className={'row'}>
+                    {
+                        row.map((cell, colIdx) =>
+                            <div
+                                key={(rowIdx*height + colIdx).toString()}
+                                data-row={rowIdx}
+                                data-col={colIdx}
+                                className=
+                                {
+                                classNames(
+                                    'cell',
+                                    {top: rowIdx === 0},
+                                    {bottom: rowIdx === height - 1},
+                                    {left: colIdx === 0},
+                                    {right: colIdx === height - 1},
+                                    {miniTop: rowIdx > 0 && rowIdx % n === 0},
+                                    {miniBottom: rowIdx < height - 1 && (rowIdx + 1) % n === 0},
+                                    {miniLeft: colIdx > 0 && colIdx % n === 0},
+                                    {miniRight: colIdx < height - 1 && (colIdx + 1) % n === 0},
+                                    {originalCell: props.originalGrid[rowIdx][colIdx] !== 0},
+                                    {activeCell: rowIdx === activeRow && colIdx === activeCol},
+                                    {oldCell: props.grid[rowIdx][colIdx] < 0},
+                                    {wrongCell: wrongCells.filter(xy => xy[0] === rowIdx && xy[1] === colIdx).length > 0},
+                                    {filledByComp: rowIdx*height + colIdx <= props.lastFilledIn}
+                                )
+                                // `cell
+                                // ${rowIdx === 0 ? "top" : ""}
+                                // ${rowIdx === height - 1 ? "bottom" : ""}
+                                // ${colIdx === 0 ? "left" : ""}
+                                // ${colIdx === height - 1 ? "right" : ""}
+                                // ${rowIdx > 0 && rowIdx % n === 0 ? "miniTop" : ""}
+                                // ${rowIdx < height - 1 && (rowIdx + 1) % n === 0 ? "miniBottom" : ""}
+                                // ${colIdx > 0 && colIdx % n === 0 ? "miniLeft" : ""}
+                                // ${colIdx < height - 1 && (colIdx + 1) % n === 0 ? "miniRight" : ""}
+                                // ${props.originalGrid[rowIdx][colIdx] !== 0 ? "originalCell" : ""}
+                                // ${rowIdx === activeRow && colIdx === activeCol ? "activeCell" : ""}
+                                // ${props.grid[rowIdx][colIdx] < 0 ? "oldCell" : ""}`
+
+                                }
+                                onMouseDown={_cellOnClick}>
+                                <span className={'cell-text'}>
+                                    {cell !== 0 ? cell : ""}
+                                </span>
+                            </div>
+                        )
+                    }
+                </div>
+            )
+            }
+        </div>
     );
 }
 

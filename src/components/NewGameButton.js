@@ -16,11 +16,18 @@ function NewGameButton(props) {
                 setOriginalGrid(newGame.grid);
                 setGrid(newGame.grid);
                 setN(newGame.n);
+                props.setWrongCells([])
+                props.setLastFilledIn(0)
             });
     }
 
     return (
-        <button onClick={_handleNewGameClick}>New Game</button>
+        <button
+            onClick={_handleNewGameClick}
+            className={'new-button'}
+        >
+            New Game
+        </button>
         // <Button variant="info" onClick={_handleNewGameClick}>New Game</Button>
     )
 }

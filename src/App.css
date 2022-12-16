@@ -1,18 +1,19 @@
 body {
     /*background-color: #444444;*/
+    background-color: #eeeeee;
 }
 
-
 .gridHolder {
-    margin-top: 10rem;
+    margin-top: 5rem;
 }
 
 .gameState {
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
+    width: 80%;
     text-align: center;
     margin-bottom: 1rem;
+    font-size: 24px;
     /*color: #f3f3f3;*/
 }
 
@@ -51,13 +52,55 @@ body {
     /*border-color: white;*/
 }
 
+@keyframes comp-filled-in {
+    from {
+        background-color: #aa54e1;
+        /*color: #643184;*/
+        color: white;
+    }
+    to {
+
+    }
+}
+
+@keyframes comp-deleted {
+    from {
+        background-color: #d70000;
+        color: black;
+    }
+
+    to {
+        background-color: #cfb2b3;
+    }
+}
+
+.cell.filledByComp {
+    animation-name: comp-filled-in;
+    animation-duration: 1000ms;
+}
+
+
 .cell.oldCell {
+    animation-name: comp-deleted;
+    animation-duration: 1000ms;
     text-decoration: line-through;
     color: red;
+    background-color: #cfb2b3;
+    /*background: linear-gradient(to bottom right, #eeeeee, #eeeeee 48%, #ff6294 48%, #ff6294 52%, #eeeeee 52%, #eeeeee);*/
 }
 
 .cell.originalCell {
     color: black;
+    background-color: #d1d1d1;
+}
+
+.cell.wrongCell {
+    background-color: red;
+    color: #660000;
+}
+
+.cell.wrongCell.activeCell {
+    background-color: coral;
 }
 
 .cell.activeCell {
@@ -65,7 +108,7 @@ body {
 }
 
 .cell.activeCell.originalCell {
-    background-color: red;
+    background-color: darkgrey;
 }
 
 .cell.top {
@@ -98,4 +141,24 @@ body {
     margin-right: auto;
     width: 50%;
     text-align: center;
+}
+
+button {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    width: 200px;
+    height: 40px;
+    /*font-style: italic;*/
+    font-size: large;
+    font-weight: bold;
+}
+
+.new-button {
+    background-color: lightblue;
+    color: darkblue;
+}
+
+.solve-button {
+    background-color: lightgreen;
+    color: darkgreen;
 }

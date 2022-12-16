@@ -6,6 +6,9 @@ function SolveGameButton(props) {
     const setGrid = props.setGrid;
     const originalGrid = props.originalGrid;
     const changeCell = props.changeCell;
+    const lastFilledIn = props.lastFilledIn
+    const setLastFilledIn = props.setLastFilledIn
+    const height = originalGrid.length
 
     function _handleSolveGameClick(e) {
         fetch('/api/solve_puzzle', {
@@ -35,6 +38,7 @@ function SolveGameButton(props) {
                             console.log('here');
                         }
                         changeCell(change[0], change[1], change[2]);
+                        setLastFilledIn(change[0]*height + change[1])
                     }, timeout)
                     timeout += interval;
                 })
@@ -44,7 +48,12 @@ function SolveGameButton(props) {
     }
 
     return (
-        <button onClick={_handleSolveGameClick}>Solve Game</button>
+        <button
+            onClick={_handleSolveGameClick}
+            className={'solve-button'}
+        >
+            Solve Game
+        </button>
         // <Button variant="secondary" onClick={_handleSolveGameClick}>Solve Game</Button>
     )
 }
